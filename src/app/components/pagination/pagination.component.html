@@ -1,10 +1,9 @@
 <div class="buttons">
-  <ion-button *ngIf="currentPage === 1" data-page="previous"><</ion-button>
-<!--  <ion-button shape="round" data-page="1" (click)="changePage.emit($event)" [disabled]="currentPage === 1">1</ion-button>-->
-<!--  <ion-button shape="round" data-page="2" (click)="changePage.emit($event)" [disabled]="currentPage === 2">2</ion-button>-->
+  <ion-button *ngIf="currentPage !== 1" (click)="onButtonPageClickHandler('previous')"><</ion-button>
 
 
-  <ion-button [disabled]="i === currentPage" *ngFor="let i of pagesToView">{{i}}</ion-button>
+  <ion-button [disabled]="i === currentPage" *ngFor="let i of pages" (click)="onButtonPageClickHandler(i)">{{i}}</ion-button>
 
-    <ion-button  data-page="next" (click)="changePage.emit($event)">></ion-button>
+  <ion-button *ngIf="currentPage !== pages[pages.length - 1]" (click)="onButtonPageClickHandler('next')">></ion-button>
+
 </div>

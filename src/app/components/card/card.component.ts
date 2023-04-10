@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
-import { IBeer } from '../../pages/home/home.page';
+import { IBeer } from '../../types/beer';
 import { RouterLink } from '@angular/router';
 
 @Component({
