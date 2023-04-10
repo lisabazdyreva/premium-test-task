@@ -4,6 +4,8 @@ import { BeerService } from '../../services/beer.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { IBeer } from '../../types/beer';
 import { NgIf } from '@angular/common';
+import { StorageService } from '../../storage/storage.service';
+import { FavoriteBeersService } from '../../services/favorite-beers.service';
 
 @Component({
   selector: 'app-beer',
@@ -19,7 +21,9 @@ export class BeerPage implements OnInit {
 
   constructor(
     private beerService: BeerService,
-    private route: ActivatedRoute
+    private favoriteBeerService: FavoriteBeersService,
+    private route: ActivatedRoute,
+    private storageService: StorageService
   ) {}
 
   ngOnInit() {
@@ -35,16 +39,25 @@ export class BeerPage implements OnInit {
   }
 
   addFavoriteBeer() {
-    this.beerService.addFavoriteBeer(this.beer);
+    this.favoriteBeerService.addFavoriteBeer(this.beer);
+    this.updateStorageFavoriteBeers();
     this.checkIsFavorite();
   }
 
   removeFavoriteBeer() {
-    this.beerService.removeFavoriteBeer(this.beer);
+    this.favoriteBeerService.removeFavoriteBeer(this.beer);
+    this.updateStorageFavoriteBeers();
     this.checkIsFavorite();
   }
 
   checkIsFavorite() {
-    this.isFavorite = this.beerService.getIndex(this.beer) !== -1;
+    this.isFavorite = this.favoriteBeerService.getIndex(this.beer) !== -1;
+  }
+
+  updateStorageFavoriteBeers() {
+    this.storageService.set(
+      'favoriteBeers',
+      this.favoriteBeerService.getFavoriteBeers()
+    );
   }
 }

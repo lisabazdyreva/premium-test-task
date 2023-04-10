@@ -19,5 +19,7 @@
 
   <app-favorites-modal></app-favorites-modal>
   <app-pagination *ngIf="pages.length" (changePage)="setPageNumValue($event)" [currentPage]="currentPage" [pages]="pagesToView" ></app-pagination>
-
+  <ion-loading> Loading</ion-loading>
 </ion-content>
+
+

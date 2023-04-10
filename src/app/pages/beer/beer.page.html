@@ -6,7 +6,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="beer" [fullscreen]="true" class="ion-padding">
+<ion-content  *ngIf="beer" [fullscreen]="true" class="ion-padding">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">About beer</ion-title>
@@ -23,7 +23,7 @@
     {{beer.description}}
   </p>
 
-  <button *ngIf="!isFavorite" type="button" (click)="addFavoriteBeer()">add to favorite</button>
-  <button *ngIf="isFavorite" type="button" (click)="removeFavoriteBeer()">remove from favorite</button>
+  <ion-button *ngIf="!isFavorite" type="button" (click)="addFavoriteBeer()">add to favorite</ion-button>
+  <ion-button *ngIf="isFavorite" type="button" (click)="removeFavoriteBeer()">remove from favorite</ion-button>
 
 </ion-content>

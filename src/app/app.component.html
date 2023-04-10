@@ -1,3 +1,6 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-progress-bar *ngIf="!isLoaded" type="indeterminate"></ion-progress-bar>
+  <ion-router-outlet *ngIf="isLoaded"></ion-router-outlet>
 </ion-app>
+
+

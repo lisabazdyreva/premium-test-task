@@ -1,5 +1,4 @@
-
-<ion-button id="open-modal" expand="block">Open Favorites</ion-button>
+<ion-button id="open-modal" expand="block" (click)="onOpenButtonClickHandler()">Open Favorites</ion-button>
 <ion-modal trigger="open-modal">
   <ng-template>
     <ion-header>
@@ -12,9 +11,9 @@
     </ion-header>
     <ion-content class="ion-padding">
       <p *ngIf="!favoriteBeers.length">{{message}}</p>
-      <ion-list>
+      <ion-list *ngIf="favoriteBeers.length">
         <ion-item *ngFor="let beer of favoriteBeers">
-          {{beer.name}}
+          <a [routerLink]="['/beer', beer.id]" (click)="close()">{{beer.name}}</a>
           <button type="button" (click)="removeFromFavorite(beer)">R</button>
         </ion-item>
       </ion-list>

@@ -7,7 +7,7 @@ import { IBeer } from '../types/beer';
 })
 export class BeerService {
   currentPage = 1;
-  favoriteBeers: IBeer[] = [];
+
   constructor(private http: HttpClient) {}
 
   fetchBeers() {
@@ -26,31 +26,5 @@ export class BeerService {
 
   public setPage(value: number) {
     this.currentPage = value;
-  }
-
-  addFavoriteBeer(beer: IBeer) {
-    const isFavorite = this.getIndex(beer) !== -1;
-
-    if (!isFavorite) {
-      this.favoriteBeers.push(beer);
-    }
-  }
-
-  removeFavoriteBeer(beer: IBeer) {
-    const index = this.getIndex(beer);
-
-    if (index !== -1) {
-      this.favoriteBeers.splice(index, 1);
-    }
-  }
-
-  getIndex(beer: IBeer) {
-    return this.favoriteBeers.findIndex(
-      (favoriteBeer) => favoriteBeer.id === beer.id
-    );
-  }
-
-  getFavoriteBeers() {
-    return this.favoriteBeers;
   }
 }

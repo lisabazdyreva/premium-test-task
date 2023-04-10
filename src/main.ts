@@ -6,8 +6,9 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { environment } from './environments/environment';
-import { BeerService } from './app/services/beer.service';
+
 import { HttpClientModule } from '@angular/common/http';
+import { IonicStorageModule } from '@ionic/storage-angular';
 
 if (environment.production) {
   enableProdMode();
@@ -17,8 +18,8 @@ bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     importProvidersFrom(IonicModule.forRoot({})),
-    provideRouter(routes),
-    BeerService,
     importProvidersFrom(HttpClientModule),
+    importProvidersFrom(IonicStorageModule.forRoot()),
+    provideRouter(routes),
   ],
 }).catch((e) => console.log(e));
