@@ -17,6 +17,6 @@
     <app-card [beer]="beer"></app-card>
   </div>
 
-  <app-pagination (changePage)="onPageChange($event)" [currentPage]="currentPage"></app-pagination>
+  <app-pagination *ngIf="pages.length" (changePage)="onPageChange($event)" [currentPage]="currentPage" [pages]="pages"></app-pagination>
 
 </ion-content>

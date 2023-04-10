@@ -15,6 +15,15 @@ export class BeerService {
     });
   }
 
+  fetchAllBeers() {
+    return this.http.get<IBeer[]>('https://api.punkapi.com/v2/beers');
+  }
+
+  fetchBeer(id: number) {
+    return this.http.get<IBeer[]>(`https://api.punkapi.com/v2/beers/${id}`);
+  }
+  // this.totalCount = this.beers.length;
+  //       console.log(this.totalCount);
   public setPage(value: number) {
     this.currentPage = value;
   }

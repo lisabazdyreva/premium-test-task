@@ -1,4 +1,4 @@
-<ion-card>
+<ion-card [routerLink]="['/beer', beer.id]" >
   <img alt="Silhouette of mountains" [src]="beer.image_url" height="150" />
   <ion-card-header>
     <ion-card-title>{{beer.name}}</ion-card-title>
