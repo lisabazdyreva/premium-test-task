@@ -24,7 +24,6 @@ export class StorageService {
 
   public async clear() {
     await this._storage?.clear();
-    //   TODO кнопка очистки всего списка и кнопка выбора темы
   }
 
   public async getFavoriteBeerList() {

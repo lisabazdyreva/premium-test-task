@@ -36,10 +36,14 @@ export class HomePage implements OnInit {
   pages: number[] = [];
   pagesToView: number[] = [];
 
+  mode;
+
   constructor(
     private beerService: BeerService,
     private loadingController: LoadingController
-  ) {}
+  ) {
+    this.mode = document.body.classList.contains('dark') ? 'dark' : 'light';
+  }
 
   ngOnInit() {
     this._getAllBeer();
@@ -55,6 +59,8 @@ export class HomePage implements OnInit {
       for (let i = 1; i <= totalPages; i++) {
         this.pages.push(i);
       }
+      this.setPagesToView();
+
       loading.dismiss();
     });
   }
@@ -64,8 +70,6 @@ export class HomePage implements OnInit {
 
     this.beerService.fetchPageBeer().subscribe((data) => {
       this.beerList = data;
-      this.setPagesToView();
-
       loading.dismiss();
     });
   }
@@ -91,6 +95,7 @@ export class HomePage implements OnInit {
 
     this.beerService.setCurrentPage(this.currentPage);
     this._getPageBeer();
+    this.setPagesToView();
   }
 
   public setPagesToView() {
@@ -126,5 +131,10 @@ export class HomePage implements OnInit {
 
     loader.present();
     return loader;
+  }
+
+  toggle() {
+    document.body.classList.toggle('dark');
+    this.mode = this.mode === 'dark' ? 'light' : 'dark';
   }
 }

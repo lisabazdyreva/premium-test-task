@@ -10,6 +10,7 @@
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large" color="success">Beer</ion-title>
+      <ion-button fill="clear" color="tertiary" slot="end" (click)="toggle()">{{mode}}</ion-button>
     </ion-toolbar>
   </ion-header>
 
@@ -17,7 +18,7 @@
     <app-card [beer]="beer"></app-card>
   </div>
 
-  <app-favorites-modal></app-favorites-modal>
+  <app-favorites-modal *ngIf="pages.length"></app-favorites-modal>
   <app-pagination *ngIf="pages.length" (changePage)="setPageNumValue($event)" [currentPage]="currentPage" [pages]="pagesToView" ></app-pagination>
 </ion-content>
 

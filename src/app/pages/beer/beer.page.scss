@@ -2,8 +2,15 @@
   font-style: italic;
 }
 
+.description__image-wrapper {
+  width: 70px;
+  height: 150px;
+}
+
 .description__image {
-  height: 200px;
+  object-fit: cover;
+  max-width: 70px;
+  max-height: 150px;
 }
 
 .description__link {
