@@ -1,37 +1,51 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
-import { BeerService } from '../../services/beer.service';
+import { IonicModule, LoadingController } from '@ionic/angular';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { IBeer } from '../../types/beer';
 import { NgForOf, NgIf } from '@angular/common';
+
+import { IBeer } from '../../types/beer';
+
+import { Route, STORAGE_KEY_FAVORITE_BEER_LIST } from '../../utils/const';
+
+import { BeerService } from '../../services/beer.service';
+import { FavoriteBeerListService } from '../../services/favorite-beer-list.service';
 import { StorageService } from '../../storage/storage.service';
-import { FavoriteBeersService } from '../../services/favorite-beers.service';
 
 @Component({
   selector: 'app-beer',
   templateUrl: './beer.page.html',
   styleUrls: ['./beer.page.scss'],
   standalone: true,
-  imports: [IonicModule, NgIf, RouterLink, NgForOf],
+  imports: [IonicModule, NgIf, NgForOf, RouterLink],
 })
 export class BeerPage implements OnInit {
   id!: number;
   beer!: IBeer;
   isFavorite = false;
   ingredients!: string[];
-  ingredientsLine!: string;
+  Route = Route;
 
   constructor(
     private beerService: BeerService,
-    private favoriteBeerService: FavoriteBeersService,
+    private favoriteBeerService: FavoriteBeerListService,
     private route: ActivatedRoute,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private loadingController: LoadingController
   ) {}
 
   ngOnInit() {
+    this._setId();
+    this._fetchBeer();
+  }
+
+  private _setId() {
     this.route.params.subscribe((params) => {
       this.id = params['id'];
     });
+  }
+
+  private async _fetchBeer() {
+    const loading = await this._getLoader();
 
     this.beerService.fetchBeer(this.id).subscribe((data) => {
       const [beer] = data;
@@ -42,32 +56,42 @@ export class BeerPage implements OnInit {
         this.ingredients.push(ingredient.name);
       });
 
-      this.ingredients = this.ingredients.slice(0, 4);
+      this.ingredients = this.ingredients.slice(0, 4); //TODO
 
       this.checkIsFavorite();
+      loading.dismiss();
     });
   }
 
-  addFavoriteBeer() {
+  public addFavoriteBeer() {
     this.favoriteBeerService.addFavoriteBeer(this.beer);
-    this.updateStorageFavoriteBeers();
+    this._updateStorageFavoriteBeerList();
     this.checkIsFavorite();
   }
 
-  removeFavoriteBeer() {
+  public removeFavoriteBeer() {
     this.favoriteBeerService.removeFavoriteBeer(this.beer);
-    this.updateStorageFavoriteBeers();
+    this._updateStorageFavoriteBeerList();
     this.checkIsFavorite();
   }
 
-  checkIsFavorite() {
-    this.isFavorite = this.favoriteBeerService.getIndex(this.beer) !== -1;
+  private async _updateStorageFavoriteBeerList() {
+    await this.storageService.set(
+      STORAGE_KEY_FAVORITE_BEER_LIST,
+      this.favoriteBeerService.getFavoriteBeerList()
+    );
   }
 
-  updateStorageFavoriteBeers() {
-    this.storageService.set(
-      'favoriteBeers',
-      this.favoriteBeerService.getFavoriteBeers()
-    );
+  public checkIsFavorite() {
+    this.isFavorite = this.favoriteBeerService.getBeerIndex(this.beer) !== -1;
+  }
+
+  private async _getLoader() {
+    const loader = await this.loadingController.create({
+      message: 'Please wait...',
+    });
+
+    loader.present();
+    return loader;
   }
 }

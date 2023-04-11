@@ -1,7 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
-import { IBeer } from '../../types/beer';
+import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
+
+import { IBeer } from '../../types/beer';
+import { Route } from '../../utils/const';
 
 @Component({
   selector: 'app-card',
@@ -10,9 +12,8 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [IonicModule, RouterLink],
 })
-export class CardComponent implements OnInit {
+export class CardComponent {
   @Input() beer!: IBeer;
+  Route = Route;
   constructor() {}
-
-  ngOnInit() {}
 }

@@ -1,41 +1,38 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
+
 import { IBeer } from '../types/beer';
+import { STORAGE_KEY_FAVORITE_BEER_LIST } from '../utils/const';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StorageService {
   private _storage: Storage | null = null;
-  private favoriteBeers!: IBeer[];
+  private _favoriteBeerList!: IBeer[];
 
   constructor(private storage: Storage) {}
 
-  async init() {
-    // If using, define drivers here: await this.storage.defineDriver(/*...*/);
+  public async initStorage() {
     const storage = await this.storage.create();
     this._storage = storage;
-
-    await this._getFavoriteBeers();
   }
 
-  // Create and expose methods that users of this service can
-  // call, for example:
-  public async set(key: string, value: any) {
+  public async set(key: string, value: IBeer[]) {
     await this._storage?.set(key, value);
   }
 
   public async clear() {
     await this._storage?.clear();
+    //   TODO кнопка очистки всего списка и кнопка выбора темы
   }
 
-  private async _getFavoriteBeers() {
-    return await this._storage?.get('favoriteBeers').then((data) => {
-      this.favoriteBeers = data ? data : [];
-    });
+  public async getFavoriteBeerList() {
+    const data = await this._storage?.get(STORAGE_KEY_FAVORITE_BEER_LIST);
+    this._favoriteBeerList = data ? data : [];
   }
 
-  getBeers() {
-    return this.favoriteBeers;
+  public getBeerList() {
+    return this._favoriteBeerList;
   }
 }

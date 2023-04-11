@@ -13,12 +13,12 @@
     </ion-toolbar>
   </ion-header>
 
-  <div *ngFor="let beer of beers">
+  <div *ngFor="let beer of beerList">
     <app-card [beer]="beer"></app-card>
   </div>
 
   <app-favorites-modal></app-favorites-modal>
-  <app-pagination (click)="showLoading()" *ngIf="pages.length" (changePage)="setPageNumValue($event)" [currentPage]="currentPage" [pages]="pagesToView" ></app-pagination>
+  <app-pagination *ngIf="pages.length" (changePage)="setPageNumValue($event)" [currentPage]="currentPage" [pages]="pagesToView" ></app-pagination>
 </ion-content>
 
 

@@ -1,11 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { IonicModule, LoadingController } from '@ionic/angular';
 import { NgForOf, NgIf } from '@angular/common';
-import { BeerService } from '../../services/beer.service';
+
 import { CardComponent } from '../../components/card/card.component';
 import { PaginationComponent } from '../../components/pagination/pagination.component';
-import { IBeer } from '../../types/beer';
 import { FavoritesModalComponent } from '../../components/favorites-modal/favorites-modal.component';
+
+import { IBeer } from '../../types/beer';
+
+import { BeerService } from '../../services/beer.service';
+import {
+  BEER_PER_PAGE,
+  INITIAL_CURRENT_PAGE,
+  PageValue,
+} from '../../utils/const';
 
 @Component({
   selector: 'app-home',
@@ -22,56 +30,70 @@ import { FavoritesModalComponent } from '../../components/favorites-modal/favori
   ],
 })
 export class HomePage implements OnInit {
-  beers: IBeer[] = [];
-  currentPage = 1;
-  totalCount = 0;
-  beerPerPage = 5;
+  beerList: IBeer[] = [];
+  currentPage = INITIAL_CURRENT_PAGE;
+
   pages: number[] = [];
   pagesToView: number[] = [];
+
   constructor(
     private beerService: BeerService,
     private loadingController: LoadingController
   ) {}
 
-  ngOnInit(): void {
-    this.beerService.fetchAllBeers().subscribe((data) => {
-      this.totalCount = data.length;
-      const totalPages = this.totalCount / this.beerPerPage;
+  ngOnInit() {
+    this._getAllBeer();
+    this._getPageBeer();
+  }
+
+  private async _getAllBeer() {
+    const loading = await this._getLoader();
+
+    this.beerService.fetchAllBeer().subscribe((data) => {
+      const totalPages = data.length / BEER_PER_PAGE;
 
       for (let i = 1; i <= totalPages; i++) {
         this.pages.push(i);
       }
+      loading.dismiss();
     });
-
-    this.getBeers();
   }
 
-  getBeers() {
-    this.beerService.fetchBeers().subscribe((data) => {
-      this.beers = data;
+  private async _getPageBeer() {
+    const loading = await this._getLoader();
+
+    this.beerService.fetchPageBeer().subscribe((data) => {
+      this.beerList = data;
       this.setPagesToView();
+
+      loading.dismiss();
     });
   }
 
-  setPageNumValue(num: number | string) {
-    if (typeof num === 'number') {
-      this.currentPage = num;
+  public setPageNumValue(value: number | string) {
+    switch (typeof value) {
+      case 'number': {
+        this.currentPage = value;
+        break;
+      }
+      case 'string': {
+        if (value === PageValue.Previous) {
+          this.currentPage -= 1;
+          break;
+        }
+
+        if (value === PageValue.Next) {
+          this.currentPage += 1;
+          break;
+        }
+      }
     }
 
-    if (typeof num === 'string') {
-      if (num === 'previous') {
-        this.currentPage = this.currentPage - 1;
-      }
-
-      if (num === 'next') {
-        this.currentPage = this.currentPage + 1;
-      }
-    }
-    this.beerService.setPage(this.currentPage);
-    this.getBeers();
+    this.beerService.setCurrentPage(this.currentPage);
+    this._getPageBeer();
   }
 
-  setPagesToView() {
+  public setPagesToView() {
     switch (this.currentPage) {
       case 1: {
         this.pagesToView = this.pages.slice(
@@ -97,12 +119,12 @@ export class HomePage implements OnInit {
     }
   }
 
-  async showLoading() {
-    const loading = await this.loadingController.create({
-      message: 'Dismissing after 3 seconds...',
-      duration: 3000,
+  private async _getLoader() {
+    const loader = await this.loadingController.create({
+      message: 'Please wait...',
     });
 
-    loading.present();
+    loader.present();
+    return loader;
   }
 }

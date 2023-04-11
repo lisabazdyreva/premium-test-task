@@ -1,10 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonicModule, IonModal } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
-import { IBeer } from '../../types/beer';
-import { NgForOf, NgIf } from '@angular/common';
-import { FavoriteBeersService } from '../../services/favorite-beers.service';
 import { RouterLink } from '@angular/router';
+import { NgForOf, NgIf } from '@angular/common';
+
+import { BEER_LIST_EMPTY_MESSAGE } from '../../utils/const';
+import { IBeer } from '../../types/beer';
+
+import { FavoriteBeerListService } from '../../services/favorite-beer-list.service';
 
 @Component({
   selector: 'app-favorites-modal',
@@ -17,28 +20,27 @@ export class FavoritesModalComponent implements OnInit {
   @ViewChild(IonModal) modal!: IonModal;
   favoriteBeers: IBeer[] = [];
 
-  message =
-    'List of favorite beer is empty. You can add beer to this list on beer page.';
+  message = BEER_LIST_EMPTY_MESSAGE;
 
-  constructor(private favoriteBeerService: FavoriteBeersService) {}
-
-  close() {
-    this.modal.dismiss(null, 'cancel');
-  }
+  constructor(private favoriteBeerService: FavoriteBeerListService) {}
 
   ngOnInit() {
-    this.setFavorite();
+    this._setFavorite();
   }
 
-  onOpenButtonClickHandler() {
-    this.setFavorite();
-  }
-
-  setFavorite() {
-    this.favoriteBeers = this.favoriteBeerService.getFavoriteBeers();
+  private _setFavorite() {
+    this.favoriteBeers = this.favoriteBeerService.getFavoriteBeerList();
   }
 
   removeFromFavorite(beer: IBeer) {
     this.favoriteBeerService.removeFavoriteBeer(beer);
+  }
+
+  onOpenButtonClickHandler() {
+    this._setFavorite();
+  }
+
+  public close() {
+    this.modal.dismiss(null, 'cancel');
   }
 }
