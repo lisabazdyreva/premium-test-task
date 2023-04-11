@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, LoadingController } from '@ionic/angular';
 import { NgForOf, NgIf } from '@angular/common';
 import { BeerService } from '../../services/beer.service';
 import { CardComponent } from '../../components/card/card.component';
@@ -28,7 +28,10 @@ export class HomePage implements OnInit {
   beerPerPage = 5;
   pages: number[] = [];
   pagesToView: number[] = [];
-  constructor(private beerService: BeerService) {}
+  constructor(
+    private beerService: BeerService,
+    private loadingController: LoadingController
+  ) {}
 
   ngOnInit(): void {
     this.beerService.fetchAllBeers().subscribe((data) => {
@@ -92,5 +95,14 @@ export class HomePage implements OnInit {
         break;
       }
     }
+  }
+
+  async showLoading() {
+    const loading = await this.loadingController.create({
+      message: 'Dismissing after 3 seconds...',
+      duration: 3000,
+    });
+
+    loading.present();
   }
 }

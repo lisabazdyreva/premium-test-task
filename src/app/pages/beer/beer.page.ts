@@ -42,7 +42,7 @@ export class BeerPage implements OnInit {
         this.ingredients.push(ingredient.name);
       });
 
-      this.ingredientsLine = this.ingredients.join(', ');
+      this.ingredients = this.ingredients.slice(0, 4);
 
       this.checkIsFavorite();
     });
