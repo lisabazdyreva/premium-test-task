@@ -11,21 +11,29 @@
   <ng-template>
     <ion-header>
       <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button [disabled]="!favoriteBeers.length" (click)="clearFavoriteBeerList()">Clear</ion-button>
+        </ion-buttons>
+
+        <ion-title>Favorite beers</ion-title>
         <ion-buttons slot="end">
           <ion-button (click)="close()">Close</ion-button>
         </ion-buttons>
-        <ion-title>Favorite beers</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-padding">
       <p *ngIf="!favoriteBeers.length">{{message}}</p>
+
+
       <ion-list *ngIf="favoriteBeers.length" lines="full">
+
         <ion-item *ngFor="let beer of favoriteBeers">
           <a class="favorite-list__link" [routerLink]="['/beer', beer.id]" (click)="close()"><ion-text color="success">{{beer.name}}</ion-text></a>
           <ion-button slot="end" color="danger" fill="clear" (click)="removeFromFavorite(beer)">
             <ion-icon name="close-outline"></ion-icon>
           </ion-button>
         </ion-item>
+
       </ion-list>
     </ion-content>
   </ng-template>

@@ -32,6 +32,10 @@ export class FavoriteBeerListService {
     }
   }
 
+  public clearFavoriteBeerList() {
+    this._favoriteBeerList = [];
+  }
+
   public getBeerIndex(beer: IBeer) {
     const index = this._favoriteBeerList.findIndex(
       (favoriteBeer) => favoriteBeer.id === beer.id
