@@ -1,5 +1,6 @@
 export const BEER_PER_PAGE = 5;
 export const INITIAL_CURRENT_PAGE = 1;
+export const BASE_URI = 'https://api.punkapi.com/v2/beers';
 
 export const BEER_LIST_EMPTY_MESSAGE =
   'List of favorite beer is empty. You can add beer to this list on beer page.';
@@ -15,4 +16,9 @@ export const Route = {
   Home: 'home',
   Empty: '',
   Beer: 'beer',
+} as const;
+
+export const DisplayMode = {
+  Light: 'light',
+  Dark: 'dark',
 } as const;

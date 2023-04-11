@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicModule, LoadingController } from '@ionic/angular';
+import {
+  IonicModule,
+  LoadingController,
+  ToastController,
+} from '@ionic/angular';
 import { NgForOf, NgIf } from '@angular/common';
 
 import { CardComponent } from '../../components/card/card.component';
@@ -11,6 +15,7 @@ import { IBeer } from '../../types/beer';
 import { BeerService } from '../../services/beer.service';
 import {
   BEER_PER_PAGE,
+  DisplayMode,
   INITIAL_CURRENT_PAGE,
   PageValue,
 } from '../../utils/const';
@@ -36,13 +41,19 @@ export class HomePage implements OnInit {
   pages: number[] = [];
   pagesToView: number[] = [];
 
+  isLoadedPages = false;
+  isLoadedBeer = false;
+
   mode;
 
   constructor(
     private beerService: BeerService,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private toastController: ToastController
   ) {
-    this.mode = document.body.classList.contains('dark') ? 'dark' : 'light';
+    this.mode = document.body.classList.contains(DisplayMode.Dark)
+      ? DisplayMode.Dark
+      : DisplayMode.Light;
   }
 
   ngOnInit() {
@@ -53,24 +64,38 @@ export class HomePage implements OnInit {
   private async _getAllBeer() {
     const loading = await this._getLoader();
 
-    this.beerService.fetchAllBeer().subscribe((data) => {
-      const totalPages = data.length / BEER_PER_PAGE;
+    this.beerService.fetchAllBeer().subscribe({
+      next: (data) => {
+        const totalPages = data.length / BEER_PER_PAGE;
 
-      for (let i = 1; i <= totalPages; i++) {
-        this.pages.push(i);
-      }
-      this.setPagesToView();
+        for (let i = 1; i <= totalPages; i++) {
+          this.pages.push(i);
+        }
+        this.setPagesToView();
 
-      loading.dismiss();
+        loading.dismiss();
+        this.isLoadedBeer = true;
+      },
+      error: (err) => {
+        loading.dismiss();
+        this._presentToast(err.message);
+      },
     });
   }
 
   private async _getPageBeer() {
     const loading = await this._getLoader();
 
-    this.beerService.fetchPageBeer().subscribe((data) => {
-      this.beerList = data;
-      loading.dismiss();
+    this.beerService.fetchPageBeer().subscribe({
+      next: (data) => {
+        this.beerList = data;
+        loading.dismiss();
+        this.isLoadedPages = true;
+      },
+      error: (err) => {
+        loading.dismiss();
+        this._presentToast(err.message);
+      },
     });
   }
 
@@ -124,6 +149,12 @@ export class HomePage implements OnInit {
     }
   }
 
+  toggle() {
+    document.body.classList.toggle(DisplayMode.Dark);
+    this.mode =
+      this.mode === DisplayMode.Dark ? DisplayMode.Light : DisplayMode.Dark;
+  }
+
   private async _getLoader() {
     const loader = await this.loadingController.create({
       message: 'Please wait...',
@@ -133,8 +164,12 @@ export class HomePage implements OnInit {
     return loader;
   }
 
-  toggle() {
-    document.body.classList.toggle('dark');
-    this.mode = this.mode === 'dark' ? 'light' : 'dark';
+  private async _presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message || 'Something is wrong. Try later.',
+      duration: 5000,
+      position: 'middle',
+    });
+    await toast.present();
   }
 }

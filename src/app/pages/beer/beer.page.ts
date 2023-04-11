@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicModule, LoadingController } from '@ionic/angular';
+import {
+  IonicModule,
+  LoadingController,
+  ToastController,
+} from '@ionic/angular';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgForOf, NgIf } from '@angular/common';
 
@@ -30,7 +34,8 @@ export class BeerPage implements OnInit {
     private favoriteBeerService: FavoriteBeerListService,
     private route: ActivatedRoute,
     private storageService: StorageService,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
@@ -47,19 +52,25 @@ export class BeerPage implements OnInit {
   private async _fetchBeer() {
     const loading = await this._getLoader();
 
-    this.beerService.fetchBeer(this.id).subscribe((data) => {
-      const [beer] = data;
-      this.beer = beer;
-      this.ingredients = [];
+    this.beerService.fetchBeer(this.id).subscribe({
+      next: (data) => {
+        const [beer] = data;
+        this.beer = beer;
+        this.ingredients = [];
 
-      beer.ingredients.malt.forEach((ingredient) => {
-        this.ingredients.push(ingredient.name);
-      });
+        beer.ingredients.malt.forEach((ingredient) => {
+          this.ingredients.push(ingredient.name);
+        });
 
-      this.ingredients = this.ingredients.slice(0, 4); //TODO
+        this.ingredients = this.ingredients.slice(0, 4);
 
-      this.checkIsFavorite();
-      loading.dismiss();
+        this.checkIsFavorite();
+        loading.dismiss();
+      },
+      error: (err) => {
+        loading.dismiss();
+        this._presentToast(err.message);
+      },
     });
   }
 
@@ -93,5 +104,14 @@ export class BeerPage implements OnInit {
 
     loader.present();
     return loader;
+  }
+
+  private async _presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message || 'Something is wrong. Try later.',
+      duration: 5000,
+      position: 'middle',
+    });
+    await toast.present();
   }
 }
