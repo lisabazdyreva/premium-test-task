@@ -5,8 +5,6 @@ import { IBeer } from '../types/beer';
 import { BASE_URI, BEER_PER_PAGE, INITIAL_CURRENT_PAGE } from '../utils/const';
 import { catchError, retry, throwError } from 'rxjs';
 
-// TODO можно ли basic uri запомнить
-
 @Injectable({
   providedIn: 'root',
 })
