@@ -1,10 +1,26 @@
-<ion-card [routerLink]="['/beer', beer.id]" >
-  <img alt="Silhouette of mountains" [src]="beer.image_url" height="150" />
-  <ion-card-header>
-    <ion-card-title>{{beer.name}}</ion-card-title>
-  </ion-card-header>
+<ion-card [routerLink]="['/beer', beer.id]">
+  <ion-grid>
+    <ion-row class="ion-align-items-center">
+      <ion-col size="auto">
+        <div class="card__image-wrapper">
+          <img class="card__image" alt="Silhouette of mountains" [src]="beer.image_url" />
+        </div>
+      </ion-col>
+      <ion-col>
+        <ion-card-header>
+          <ion-card-title>{{beer.name}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-chip color="tertiary">{{beer.abv}}</ion-chip> - strength
+        </ion-card-content>
+      </ion-col>
+    </ion-row>
 
-  <ion-card-content>
-    <ion-chip>{{beer.abv}}</ion-chip>
-  </ion-card-content>
+
+
+
+
+  </ion-grid>
+
+
 </ion-card>

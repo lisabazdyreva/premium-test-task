@@ -14,27 +14,11 @@ export class PaginationComponent implements OnInit {
   @Input() currentPage!: number;
   @Input() pages!: number[];
   @Input() num!: number;
-
-  pagesToView!: number[];
   constructor() {}
 
-  ngOnInit() {
-    // console.log(this.currentPage);
-    // this.changePagesToView();
-  }
+  ngOnInit() {}
 
   onButtonPageClickHandler(i: number | string) {
     this.changePage.emit(i);
-    // console.log(this.currentPage);
-    // this.changePagesToView();
-  }
-
-  changePagesToView() {
-    this.pagesToView = this.pages.slice(
-      this.currentPage - 1,
-      this.currentPage + 2
-    );
-    // console.log(this.currentPage);
-    // console.log(this.pagesToView);
   }
 }

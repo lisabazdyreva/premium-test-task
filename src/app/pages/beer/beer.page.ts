@@ -3,7 +3,7 @@ import { IonicModule } from '@ionic/angular';
 import { BeerService } from '../../services/beer.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { IBeer } from '../../types/beer';
-import { NgIf } from '@angular/common';
+import { NgForOf, NgIf } from '@angular/common';
 import { StorageService } from '../../storage/storage.service';
 import { FavoriteBeersService } from '../../services/favorite-beers.service';
 
@@ -12,12 +12,14 @@ import { FavoriteBeersService } from '../../services/favorite-beers.service';
   templateUrl: './beer.page.html',
   styleUrls: ['./beer.page.scss'],
   standalone: true,
-  imports: [IonicModule, NgIf, RouterLink],
+  imports: [IonicModule, NgIf, RouterLink, NgForOf],
 })
 export class BeerPage implements OnInit {
   id!: number;
   beer!: IBeer;
   isFavorite = false;
+  ingredients!: string[];
+  ingredientsLine!: string;
 
   constructor(
     private beerService: BeerService,
@@ -34,6 +36,14 @@ export class BeerPage implements OnInit {
     this.beerService.fetchBeer(this.id).subscribe((data) => {
       const [beer] = data;
       this.beer = beer;
+      this.ingredients = [];
+
+      beer.ingredients.malt.forEach((ingredient) => {
+        this.ingredients.push(ingredient.name);
+      });
+
+      this.ingredientsLine = this.ingredients.join(', ');
+
       this.checkIsFavorite();
     });
   }

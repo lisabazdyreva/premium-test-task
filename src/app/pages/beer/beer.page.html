@@ -1,29 +1,82 @@
 <ion-header *ngIf="beer" [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      About beer
+      Description
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content  *ngIf="beer" [fullscreen]="true" class="ion-padding">
+<ion-content *ngIf="beer" [fullscreen]="true" class="ion-padding">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">About beer</ion-title>
+      <ion-title size="medium">About beer</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <a [routerLink]="['/']">Go back</a>
+  <div class="description ion-padding-horizontal">
 
-  <h1>{{beer.name}}</h1>
+    <a [routerLink]="['/']" class="description__link"><ion-text color="success"><< go back</ion-text></a>
 
-  <img alt="Silhouette of mountains" [src]="beer.image_url" height="150" />
+    <ion-text color="tertiary">
+      <h1 class="ion-text-center">
+        {{beer.name}}
+      </h1>
 
-  <p>
-    {{beer.description}}
-  </p>
+      <div class="ion-text-end ion-padding-bottom">
+        <ion-text  color="medium">
+          {{beer.tagline}}
+        </ion-text>
+      </div>
 
-  <ion-button *ngIf="!isFavorite" type="button" (click)="addFavoriteBeer()">add to favorite</ion-button>
-  <ion-button *ngIf="isFavorite" type="button" (click)="removeFavoriteBeer()">remove from favorite</ion-button>
+    </ion-text>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="auto">
+          <img class="description__image" alt="Silhouette of mountains" [src]="beer.image_url" height="150" />
+        </ion-col>
+        <ion-col>
+          <span class="ion-text-uppercase"><ion-text color="success">Ingredients</ion-text></span>
+          <ion-list lines="full" class="ion-padding-vertical">
+            <ion-item *ngFor="let ingredient of ingredients">{{ingredient}}</ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <p>
+      {{beer.description}}
+    </p>
+
+    <div class="ion-padding-vertical">
+      <span class="ion-text-uppercase"><ion-text color="medium">perfect addition</ion-text></span>
+      <div class="ion-padding-vertical">
+        <ion-chip color="success" outline="true" *ngFor="let dish of beer.food_pairing">{{dish}}</ion-chip>
+      </div>
+    </div>
+
+    <span class="ion-text-uppercase"><ion-text color="medium">Other information</ion-text></span>
+    <ion-list lines="full" class="ion-padding-vertical">
+      <ion-item>Abv: {{beer.abv}}</ion-item>
+      <ion-item>Ph: {{beer.ph}}</ion-item>
+      <ion-item>Ebc: {{beer.ebc}}</ion-item>
+      <ion-item>Date of first brew: {{beer.first_brewed}}</ion-item>
+    </ion-list>
+
+
+  </div>
+  <ion-grid class="ion-padding-horizontal">
+    <ion-button color="tertiary" expand="block" fill="outline" *ngIf="!isFavorite" type="button" (click)="addFavoriteBeer()">
+      <ion-icon slot="start" name="heart" aria-hidden="true"></ion-icon>
+      add to favorite
+    </ion-button>
+    <ion-button color="tertiary" expand="block"  *ngIf="isFavorite" type="button" (click)="removeFavoriteBeer()">
+      <ion-icon slot="start" name="heart-dislike-outline" aria-hidden="true"></ion-icon>
+      remove from favorite
+    </ion-button>
+  </ion-grid>
+
+
+
+
 
 </ion-content>
